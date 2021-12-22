@@ -1,0 +1,71 @@
+﻿<UserControl x:Class="ImagingLibrary.Controls.ImagePresenter"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ImagingLibrary.Controls"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib" KeyUp="TheCanvas_KeyUp" UseLayoutRounding="True">
+    <UserControl.Resources>
+        <sys:Double x:Key="ImageWidth">16</sys:Double>
+
+        <Style x:Key="IconButton1" TargetType="Button">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border>
+                            <ContentPresenter HorizontalAlignment="Stretch" VerticalAlignment="Stretch"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Margin" Value="5,5,5,5"/>
+        </Style>
+    </UserControl.Resources>
+    <DockPanel  Background="{StaticResource Background1}">
+        <Border DockPanel.Dock="Top" HorizontalAlignment="Stretch" Background="{StaticResource Background2}">
+            <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center">
+
+
+                <Button ToolTip="Select Mode" Style="{StaticResource IconButton1}" Name="Btn_MoveMode" Click="Btn_MoveMode_Click">
+                    <Image Height="{StaticResource ImageWidth}" Width="{StaticResource ImageWidth}" Source="/Resources/Icons/Cursor.png"/>
+                </Button>
+
+                <Button ToolTip="Subsection Mode" Style="{StaticResource IconButton1}" Click="Btn_Subsection_Click" Name="Btn_Subsection">
+                    <Image Width="{StaticResource ImageWidth}" Source="/Resources/Icons/Crop.png"/>
+                </Button>
+
+                <GridSplitter Height="Auto" Width="1" Margin="15,0,15,0" Background="Gray"/>
+
+                <Button Style="{StaticResource IconButton1}" Name="Btn_SelectAll">
+                    <Image Width="{StaticResource ImageWidth}" Source="/Resources/Icons/SelectAll.png"/>
+                </Button>
+
+            </StackPanel>
+        </Border>
+
+
+        <Border DockPanel.Dock="Bottom" BorderThickness="0,1,0,0" BorderBrush="{StaticResource Foreground3}" Background="{StaticResource Background3}">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="1" Margin="2,2,20,2" HorizontalAlignment="Right">
+                    <TextBlock Name="Tb_X" Text="X: 13" Foreground="{StaticResource Foreground4}"/>
+                    <TextBlock Name="Tb_Y" Text="Y: 121" Foreground="{StaticResource Foreground4}"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+        
+        
+        
+        <local:ZoomBorder x:Name="zoomBorder" ClipToBounds="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderBrush="{StaticResource Foreground1}" BorderThickness="0.25" MouseLeave="ZoomBorder_MouseLeave">
+            <Canvas Name="TheCanvas" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" MouseDown="TheCanvas_MouseDown" MouseMove="TheCanvas_MouseMove" PreviewKeyUp="TheCanvas_KeyUp">
+                <Border Background="{StaticResource Background3}" BorderThickness="0.25" BorderBrush="{StaticResource Foreground2}">
+                    <Image UseLayoutRounding="True" SnapsToDevicePixels="True" RenderOptions.BitmapScalingMode="NearestNeighbor" Name="TheImage" Source="/Sheets/MinishCap.png"/>
+                </Border>
+            </Canvas>
+        </local:ZoomBorder>
+    </DockPanel>
+</UserControl>

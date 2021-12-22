@@ -1,0 +1,67 @@
+﻿<UserControl x:Class="SpriteTool.TrackItem"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SpriteTool"
+             mc:Ignorable="d" 
+             d:DesignHeight="150" d:DesignWidth="800" Name="userControl">
+    <UserControl.Resources>
+        <Style x:Key="H1" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="24"/>
+            <Setter Property="Foreground" Value="{StaticResource Foreground1}"/>
+            <Setter Property="FontWeight" Value="Normal"/>
+        </Style>
+        <Style x:Key="H2" TargetType="TextBlock">
+            <Setter Property="Margin" Value="5,0,5,0"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Foreground" Value="{StaticResource Foreground1}"/>
+            <Setter Property="FontWeight" Value="Normal"/>
+        </Style>
+        <BooleanToVisibilityConverter x:Key="BoolToVisible"/>
+        <local:InvertBooleanConverter x:Key="InvertBoolean"/>
+    </UserControl.Resources>
+    <Border Background="{StaticResource Background6}" BorderBrush="{StaticResource Foreground6}" BorderThickness="1">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0" Text="{Binding Path=ItemModel.TrackName, ElementName=userControl}" Style="{StaticResource H1}"/>
+
+                <Border Grid.Column="1" Visibility="{Binding Path=ItemModel.IsPreviewing, ElementName=userControl, Mode=OneWay, Converter={StaticResource BoolToVisible}}" Name="bdStatus" Margin="20,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Center" Background="DarkGreen" CornerRadius="7" BorderBrush="Green" BorderThickness="0.5" Padding="5">
+                    <TextBlock Text="Previewing" Name="tbStatus" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Center" FontWeight="Bold"/>
+                </Border>
+
+                <Button Click="Preview_Click" IsEnabled="{Binding Path=ItemModel.IsPreviewing, ElementName=userControl, Mode=OneWay, Converter={StaticResource InvertBoolean}}" Grid.Column="3" Content="Preview" Margin="2" Padding="5,0,5,0"/>
+            </Grid>
+            <Border Grid.Row="1" Background="{StaticResource Foreground3}" Margin="5">
+                <ScrollViewer VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Visible">
+                    <StackPanel Name="spFramePanel" Orientation="Horizontal">
+                        <StackPanel.Resources>
+                            <Style TargetType="Image">
+                                <Setter Property="Width" Value="64"/>
+                                <Setter Property="Margin" Value="1,0,1,0"/>
+                            </Style>
+                        </StackPanel.Resources>
+                    </StackPanel>
+                </ScrollViewer>
+            </Border>
+            <StackPanel Grid.Row="2" HorizontalAlignment="Right" Margin="5" Orientation="Horizontal">
+                <TextBox Width="20" Text="0"/>
+                <TextBlock Text="/" Style="{StaticResource H2}"/>
+                <TextBox Width="20" Text="{Binding Path=ItemModel.FrameCount, ElementName=userControl, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" IsEnabled="False"/>
+            </StackPanel>
+        </Grid>
+    </Border>
+</UserControl>
