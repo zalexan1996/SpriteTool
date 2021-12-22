@@ -6,12 +6,14 @@
              xmlns:local="clr-namespace:ImagingLibrary.Controls.Canvasing"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <StackPanel>
-        <Border Name="TitleBorder" Visibility="Collapsed" Margin="0, -20, 0, 0" BorderThickness="2, 0, 0, 1" BorderBrush="LightCyan">
-            <TextBlock Text="OptionalTitle" x:Name="TheTitle" Foreground="Cyan"/>
-        </Border>
-        <Rectangle x:Name="TheRectangle"/>
-    </StackPanel>
+    <Button Click="Button_Click" PreviewMouseRightButtonUp="Button_PreviewMouseRightButtonUp" PreviewMouseLeftButtonUp="Button_PreviewMouseLeftButtonUp">
+        <Button.Template>
+            <ControlTemplate TargetType="Button">
+                <ContentPresenter />
+            </ControlTemplate>
+        </Button.Template>
+        <Rectangle x:Name="TheRectangle" />
+    </Button>
 </UserControl>
 
     

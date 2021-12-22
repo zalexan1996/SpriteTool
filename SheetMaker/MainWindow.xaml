@@ -23,10 +23,10 @@
                 <MenuItem Header="Select Tool"/>
             </MenuItem>
             <MenuItem Header="Selection">
-                <MenuItem Header="Select All"/>
-                <MenuItem Header="Select All Animations"/>
-                <MenuItem Header="Select All Frames"/>
-                <MenuItem Header="Select None"/>
+                <MenuItem Header="Select All" Click="SelectAll_Click"/>
+                <MenuItem Header="Select All Animations" Click="SelectAllAnimations_Click"/>
+                <MenuItem Header="Select All Frames" Click="SelectAllFrames_Click"/>
+                <MenuItem Header="Select None" Click="SelectNone_Click"/>
                 <Separator/>
                 <MenuItem Header="Remove Selected Items"/>
                 <MenuItem Header="Combine Selected Items"/>
@@ -41,12 +41,12 @@
                 <ColumnDefinition Width="5"/>
                 <ColumnDefinition Width="*" MinWidth="200" Name="CdPropWidth"/>
             </Grid.ColumnDefinitions>
-            
-            
+
+
             <Grid Background="{StaticResource Background3}" Grid.Column="0">
                 <canvasing:ImageCanvas Name="ImageCanvas"/>
             </Grid>
-            
+
             <GridSplitter Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="{StaticResource Background1}"/>
             <Grid Grid.Column="2" Panel.ZIndex="4">
                 <Grid.RowDefinitions>

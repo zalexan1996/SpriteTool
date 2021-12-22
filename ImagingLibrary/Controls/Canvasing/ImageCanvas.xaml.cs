@@ -21,61 +21,104 @@ namespace ImagingLibrary.Controls.Canvasing
     public partial class ImageCanvas : UserControl
     {
 
+        public enum IInputMode
+        {
+            PanMode,
+            SelectMode
+        }
+        public IInputMode InputMode
+        {
+            get
+            {
+                return _inputMode;
+            }
+            set
+            {
+                _inputMode = value;
+            }
+        }
+        private IInputMode _inputMode = IInputMode.SelectMode;
+
+        // A list of all items added to the canvas (frames and animation groups)
+        public List<CanvasItem> CanvasItems { get; set; } = new List<CanvasItem>();
+
+        // An array of selected canvas items
+        private List<CanvasItem> SelectedItems = new List<CanvasItem>();
 
 
-        public List<Rectangle> SpriteRectangles { get; set; } = new List<Rectangle>();
-
-        private Rectangle ClickedRectangle = null;
-        private List<Rectangle> SelectedRectangles = new List<Rectangle>();
-        private Rectangle CombineWithRectangle = null;
-        private bool InCombineMode = false;
 
         public ImageCanvas()
         {
             InitializeComponent();
         }
 
-        public void AddRectangle(Point position, double width, double height)
+        public void AddCanvasItem(Point position, double width, double height)
         {
             // Get the scaling factors for the current window strech
             double sX = ScaleXRatio;
             double sY = ScaleYRatio;
+            Rect r = new Rect(position.X * sX, position.Y * sY, width * sX, height * sY);
+            CanvasItem item = CanvasItem.Create(r, ScaleXRatio, Brushes.Cyan);
+       
+            item.OnRightClick += OnCanvasItemRightClicked;
+            item.OnLeftClick += OnCanvasItemLeftClicked;
 
-            /*
-            CanvasItem item = new CanvasItem()
-            {
-                Stroke = Brushes.Cyan,
-                StrokeThickness = ScaleXRatio,
-                Fill = new SolidColorBrush(Color.FromArgb(0, 255, 255, 255)),
-                Rect = new Rect(position.X * sX, position.Y * sY, width * sX, height * sY)
-            };*/
-            
-            Rectangle r = new Rectangle();
-            r.StrokeThickness = 1 * sX;
-            r.Stroke = new SolidColorBrush(Colors.Red);
-            r.Fill = new SolidColorBrush(Color.FromArgb(0, 255, 255, 255));
-
-            TheCanvas.Children.Add(r);
-
-
-
-            r.Width = width * sX;
-            r.Height = height * sY;
-            Canvas.SetLeft(r, position.X * sX);
-            Canvas.SetTop(r, position.Y * sY);
-            
-            SpriteRectangles.Add(r);
+            TheCanvas.Children.Add(item);
+            CanvasItems.Add(item);
         }
-        
 
-        public void ClearRectangles()
+        public void AddCanvasItem(CanvasItem item)
+        {
+            TheCanvas.Children.Add(item);
+            CanvasItems.Add(item);
+        }
+        public void RemoveCanvasItem(CanvasItem item)
+        {
+            TheCanvas.Children.Remove(item);
+            CanvasItems.Remove(item);
+        }
+
+
+
+        public void ClearCanvasItems()
         {
             // Remove all Sprite rectangles from the canvas.
-            SpriteRectangles.ForEach(r => { TheCanvas.Children.Remove(r); });
+            while (CanvasItems.Count > 0)
+            {
+                TheCanvas.Children.RemoveAt(0);
+            }
 
             // Clear the local list of sprite rectangles.
-            SpriteRectangles.Clear();
+            CanvasItems.Clear();
         }
+
+        public void SelectAll()
+        {
+            Console.WriteLine("Select All");
+            ClearSelectedItems();
+            CanvasItems.ForEach(i => AddItemToSelection(i));
+        }
+
+
+
+        public void CombineSelectedItems()
+        {
+            
+            if (SelectedItems.Count <= 1)
+            {
+                ClearSelectedItems();
+                return;
+            }
+            else
+            {
+                CombineItems(SelectedItems[0], SelectedItems[1]);
+                RemoveItemFromSelection(SelectedItems[1]);
+                RemoveItemFromSelection(SelectedItems[0]);
+                CombineSelectedItems();
+            }
+        }
+
+
 
         public double ScaleXRatio { get { return TheImage.ActualWidth / (TheImage.Source as BitmapImage).PixelWidth; } }
         public double ScaleYRatio { get { return TheImage.ActualHeight / (TheImage.Source as BitmapImage).PixelHeight; } }
@@ -94,6 +137,11 @@ namespace ImagingLibrary.Controls.Canvasing
         } private BitmapImage _image = null;
 
 
+
+
+
+
+
         /// <summary>
         /// Converts the source rectangles to an List of mapped images.
         /// </summary>
@@ -101,14 +149,14 @@ namespace ImagingLibrary.Controls.Canvasing
         public List<Types.MappedBitmapImage> RectanglesToImages()
         {
             // Exit out if we don't have any preview rectangles.
-            if (SpriteRectangles.Count <= 0)
+            if (CanvasItems.Count <= 0)
                 return null;
 
             // Initialize the output array.
             List<Types.MappedBitmapImage> output = new List<Types.MappedBitmapImage>();
             
             // Convert each rectangle to a MappedBitmapImage
-            output = SpriteRectangles.Select(r => new Types.MappedBitmapImage()
+            output = CanvasItems.Select(r => new Types.MappedBitmapImage()
             {
                 Source = _image,
                 X = (int)(Canvas.GetLeft(r) / ScaleXRatio),
@@ -121,93 +169,72 @@ namespace ImagingLibrary.Controls.Canvasing
             return output;
         }
 
-        private void CombineRectangles(Rectangle r1, Rectangle r2)
+
+
+        protected void AddItemToSelection(CanvasItem item)
         {
-            // Cache the dimensions of the first rectangle
-            double r1X = Canvas.GetLeft(r1);
-            double r1Y = Canvas.GetTop(r1);
-            double r1W = r1.Width;
-            double r1H = r1.Height;
+            item.Selected();
+            SelectedItems.Add(item);
+        }
+        protected void RemoveItemFromSelection(CanvasItem item)
+        {
+            item.Unselected();
+            SelectedItems.Remove(item);
+        }
+        public void ClearSelectedItems()
+        {
+            while (SelectedItems.Count > 0)
+            {
+                SelectedItems[0].Unselected();
+                SelectedItems.Remove(SelectedItems[0]);
+            }
+        }
 
-            // Cache the dimensions of the second rectangle
-            double r2X = Canvas.GetLeft(r2);
-            double r2Y = Canvas.GetTop(r2);
-            double r2W = r2.Width;
-            double r2H = r2.Height;
+        private void CombineItems(CanvasItem item1, CanvasItem item2)
+        {
+            // Add the new rectangle to the canvas.
+            AddCanvasItem(CanvasItem.Combine(item1, item2, ScaleXRatio, ScaleYRatio));
 
-            // Create the union of the dimensions
-            Rect union = Rect.Union(new Rect(r1X / ScaleXRatio, r1Y / ScaleYRatio, r1W / ScaleXRatio, r1H / ScaleYRatio), new Rect(r2X / ScaleXRatio, r2Y / ScaleYRatio, r2W / ScaleXRatio, r2H / ScaleYRatio));
-
-            Console.WriteLine(union);
-            // Add this rectangle to the canvas.
-            AddRectangle(union.TopLeft, union.Width, union.Height);
 
             // Remove the old rectangles.
-            SpriteRectangles.Remove(r1);
-            TheCanvas.Children.Remove(r1);
-            SpriteRectangles.Remove(r2);
-            TheCanvas.Children.Remove(r2);
-
-
-            // Make sure the CombineWith Rectangle is the union Rectangle
-            CombineWithRectangle = null;
-            ClickedRectangle = null;
-            InCombineMode = false;
-
+            RemoveCanvasItem(item1);
+            RemoveCanvasItem(item2);
         }
+
 
         public Point GetPoint(int element)
         {
-            return new Point(Canvas.GetLeft(SpriteRectangles[element]) / ScaleXRatio, Canvas.GetTop(SpriteRectangles[element]) / ScaleYRatio);
+            return new Point(Canvas.GetLeft(CanvasItems[element]) / ScaleXRatio, Canvas.GetTop(CanvasItems[element]) / ScaleYRatio);
         }
 
-
-        private void Remove_Click(object sender, RoutedEventArgs e)
+        private void OnCanvasItemRightClicked(object sender, EventArgs e)
         {
-            if (ClickedRectangle != null)
-            {
-                SpriteRectangles.Remove(ClickedRectangle);
-                TheCanvas.Children.Remove(ClickedRectangle);
-                ClickedRectangle = null;
-            }
+            
+            CanvasItem item = sender as CanvasItem;
+            if (item == null)
+                return;
         }
-
-        private void CombineWith_Click(object sender, RoutedEventArgs e)
+        private void OnCanvasItemLeftClicked(object sender, EventArgs e)
         {
-            if (!InCombineMode)
+            
+            CanvasItem item = sender as CanvasItem;
+            if (item == null)
+                return;
+
+            switch (InputMode)
             {
-                InCombineMode = true;
-                CombineWithRectangle = ClickedRectangle;
-            }
-        }
+                case IInputMode.PanMode:
+                    break;
 
 
-        private void TheCanvas_PreviewMouseRightButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            Rectangle r = TheCanvas.InputHitTest(Mouse.GetPosition(TheCanvas)) as Rectangle;
+                case IInputMode.SelectMode:
 
-            if (r != null)
-            {
-                ClickedRectangle = r;
-                TheCanvas.ContextMenu = (ContextMenu)Resources["contextMenu"];
-            }
-            else
-            {
-                ClickedRectangle = null;
-            }
-        }
-
-        private void TheCanvas_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            if (InCombineMode && CombineWithRectangle != null)
-            {
-
-                Rectangle r = TheCanvas.InputHitTest(Mouse.GetPosition(TheCanvas)) as Rectangle;
-
-                if (r != null)
-                {
-                    CombineRectangles(r, CombineWithRectangle);
-                }
+                    if (!Keyboard.IsKeyDown(Key.LeftShift))
+                    {
+                        ClearSelectedItems();
+                    }
+                    AddItemToSelection(item);
+                    break;
             }
         }
     }

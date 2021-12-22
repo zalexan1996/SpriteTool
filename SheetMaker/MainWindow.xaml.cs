@@ -23,7 +23,7 @@ namespace SheetMaker
     {
         public List<MappedBitmapImage> Frames = new List<MappedBitmapImage>();
 
-        public string WorkspaceDirectory { get; set; }
+        public string WorkspaceDirectory { get; set; } = "C:\\temp";
         public string BaseName { get; set; }
 
 
@@ -100,7 +100,7 @@ namespace SheetMaker
             {
 
 
-                ImageCanvas.ClearRectangles();
+                ImageCanvas.ClearCanvasItems();
 
 
                 BitmapSource source = ImageCanvas.Image as BitmapSource;
@@ -115,7 +115,7 @@ namespace SheetMaker
                         int yP = i / maxSpritesWidth;
                         int x = offsetX + (xP * spriteWidth) + (xP * gap);
                         int y = offsetY + (yP * spriteHeight) + (yP * gap);
-                        ImageCanvas.AddRectangle(new Point(x, y), spriteWidth, spriteHeight);
+                        ImageCanvas.AddCanvasItem(new Point(x, y), spriteWidth, spriteHeight);
                     }
                 }
                 else
@@ -124,7 +124,7 @@ namespace SheetMaker
                     {
                         int x = offsetX + (i * spriteWidth) + (i * gap);
                         int y = offsetY;
-                        ImageCanvas.AddRectangle(new Point(x, y), spriteWidth, spriteHeight);
+                        ImageCanvas.AddCanvasItem(new Point(x, y), spriteWidth, spriteHeight);
                     }
                 }
 
@@ -157,7 +157,7 @@ namespace SheetMaker
 
                 rects.ForEach(r =>
                 {
-                    ImageCanvas.AddRectangle(r.TopLeft, r.Width, r.Height);
+                    ImageCanvas.AddCanvasItem(r.TopLeft, r.Width, r.Height);
                     
                 });
             }
@@ -178,6 +178,26 @@ namespace SheetMaker
             {
                 Frames[i].SaveToFile($"{WorkspaceDirectory}\\{BaseName}_{i}.png");
             }
+        }
+
+
+
+
+        private void SelectAll_Click(object sender, RoutedEventArgs e)
+        {
+            ImageCanvas.SelectAll();
+        }
+        private void SelectAllAnimations_Click(object sender, RoutedEventArgs e)
+        {
+            ImageCanvas.SelectAll();
+        }
+        private void SelectAllFrames_Click(object sender, RoutedEventArgs e)
+        {
+            ImageCanvas.SelectAll();
+        }
+        private void SelectNone_Click(object sender, RoutedEventArgs e)
+        {
+            ImageCanvas.ClearSelectedItems();
         }
     }
 }

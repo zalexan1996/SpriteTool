@@ -5,17 +5,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:ImagingLibrary.Controls"
              mc:Ignorable="d" >
-    <UserControl.Resources>
-        <ContextMenu x:Key="contextMenu">
-            <MenuItem Header="Remove" Click="Remove_Click"/>
-            <MenuItem Header="Combine With" Click="CombineWith_Click"/>
-        </ContextMenu>
-    </UserControl.Resources>
     <DockPanel>
         <Border DockPanel.Dock="Top" HorizontalAlignment="Center">
         </Border>
         <local:ZoomBorder>
-            <Canvas Name="TheCanvas" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" PreviewMouseLeftButtonUp="TheCanvas_PreviewMouseLeftButtonUp" PreviewMouseRightButtonUp="TheCanvas_PreviewMouseRightButtonUp">
+            <Canvas Name="TheCanvas" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                 <Image Canvas.Top="0" Canvas.Left="0" Name="TheImage" UseLayoutRounding="True" SnapsToDevicePixels="True" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
             </Canvas>
         </local:ZoomBorder>
