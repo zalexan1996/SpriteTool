@@ -100,7 +100,7 @@ namespace SheetMaker
             {
 
 
-                ImageCanvas.ClearCanvasItems();
+                ImageCanvas.ClearCanvasItems<ImagingLibrary.Controls.Canvasing.CanvasItem>();
 
 
                 BitmapSource source = ImageCanvas.Image as BitmapSource;
@@ -127,8 +127,6 @@ namespace SheetMaker
                         ImageCanvas.AddCanvasItem(new Point(x, y), spriteWidth, spriteHeight);
                     }
                 }
-
-
             }
 
         }
@@ -144,6 +142,7 @@ namespace SheetMaker
 
         private void BtnIslandDetection_Click(object sender, RoutedEventArgs e)
         {
+            ImageCanvas.ClearCanvasItems<ImagingLibrary.Controls.Canvasing.CanvasItem>();
             ImagingLibrary.Algorithms.IslandDetectionAlgorithm islandDetection = new ImagingLibrary.Algorithms.IslandDetectionAlgorithm()
             {
                 BackgroundColor = new SolidColorBrush(Colors.Black)
@@ -198,6 +197,21 @@ namespace SheetMaker
         private void SelectNone_Click(object sender, RoutedEventArgs e)
         {
             ImageCanvas.ClearSelectedItems();
+        }
+
+        private void RemoveSelectedItems_Click(object sender, RoutedEventArgs e)
+        {
+            ImageCanvas.RemoveSelectedItemsFromCanvas();
+        }
+
+        private void CombineSelectedItems_Click(object sender, RoutedEventArgs e)
+        {
+            ImageCanvas.CombineSelectedItems();
+        }
+
+        private void NewAnimFromSelection_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

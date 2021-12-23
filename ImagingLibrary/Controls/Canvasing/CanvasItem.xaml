@@ -12,7 +12,10 @@
                 <ContentPresenter />
             </ControlTemplate>
         </Button.Template>
-        <Rectangle x:Name="TheRectangle" />
+        <Grid>
+            <TextBlock x:Name="TheTextBlock" Text="OptionalTitle" Visibility="Collapsed" FontSize="3"/>
+            <Rectangle x:Name="TheRectangle" Fill="Transparent"/>
+        </Grid>
     </Button>
 </UserControl>
 

@@ -28,9 +28,9 @@
                 <MenuItem Header="Select All Frames" Click="SelectAllFrames_Click"/>
                 <MenuItem Header="Select None" Click="SelectNone_Click"/>
                 <Separator/>
-                <MenuItem Header="Remove Selected Items"/>
-                <MenuItem Header="Combine Selected Items"/>
-                <MenuItem Header="New Animation from Selection"/>
+                <MenuItem Header="Remove Selected Items" Click="RemoveSelectedItems_Click"/>
+                <MenuItem Header="Combine Selected Items" Click="CombineSelectedItems_Click"/>
+                <MenuItem Header="New Animation from Selection" Click="NewAnimFromSelection_Click"/>
             </MenuItem>
 
         </Menu>

@@ -58,7 +58,7 @@ namespace ImagingLibrary.Controls.Canvasing
             double sX = ScaleXRatio;
             double sY = ScaleYRatio;
             Rect r = new Rect(position.X * sX, position.Y * sY, width * sX, height * sY);
-            CanvasItem item = CanvasItem.Create(r, ScaleXRatio, Brushes.Cyan);
+            CanvasItem item = CanvasItem.Create(r, ScaleXRatio);
        
             item.OnRightClick += OnCanvasItemRightClicked;
             item.OnLeftClick += OnCanvasItemLeftClicked;
@@ -69,6 +69,9 @@ namespace ImagingLibrary.Controls.Canvasing
 
         public void AddCanvasItem(CanvasItem item)
         {
+            item.OnRightClick += OnCanvasItemRightClicked;
+            item.OnLeftClick += OnCanvasItemLeftClicked;
+
             TheCanvas.Children.Add(item);
             CanvasItems.Add(item);
         }
@@ -76,25 +79,34 @@ namespace ImagingLibrary.Controls.Canvasing
         {
             TheCanvas.Children.Remove(item);
             CanvasItems.Remove(item);
+            RemoveItemFromSelection(item);
         }
 
 
 
-        public void ClearCanvasItems()
+        public void ClearCanvasItems<T>()
         {
             // Remove all Sprite rectangles from the canvas.
-            while (CanvasItems.Count > 0)
+            for (int i = TheCanvas.Children.Count - 1; i >= 0; i--)
             {
-                TheCanvas.Children.RemoveAt(0);
+                if (TheCanvas.Children[i].GetType() == typeof(T))
+                {
+                    TheCanvas.Children.RemoveAt(i);
+                }
             }
 
             // Clear the local list of sprite rectangles.
             CanvasItems.Clear();
         }
 
+        public void RemoveSelectedItemsFromCanvas()
+        {
+            for (int i = SelectedItems.Count - 1; i >= 0; --i)
+                RemoveCanvasItem(SelectedItems[i]);
+        }
+
         public void SelectAll()
         {
-            Console.WriteLine("Select All");
             ClearSelectedItems();
             CanvasItems.ForEach(i => AddItemToSelection(i));
         }
@@ -112,8 +124,6 @@ namespace ImagingLibrary.Controls.Canvasing
             else
             {
                 CombineItems(SelectedItems[0], SelectedItems[1]);
-                RemoveItemFromSelection(SelectedItems[1]);
-                RemoveItemFromSelection(SelectedItems[0]);
                 CombineSelectedItems();
             }
         }
@@ -193,8 +203,9 @@ namespace ImagingLibrary.Controls.Canvasing
         private void CombineItems(CanvasItem item1, CanvasItem item2)
         {
             // Add the new rectangle to the canvas.
-            AddCanvasItem(CanvasItem.Combine(item1, item2, ScaleXRatio, ScaleYRatio));
-
+            CanvasItem newItem = CanvasItem.Combine(item1, item2, ScaleXRatio, ScaleYRatio);
+            AddCanvasItem(newItem);
+            AddItemToSelection(newItem);
 
             // Remove the old rectangles.
             RemoveCanvasItem(item1);

@@ -22,28 +22,9 @@ namespace ImagingLibrary.Controls.Canvasing
     {
 
 
-        public SolidColorBrush Stroke
-        {
-            get
-            {
-                return (SolidColorBrush)TheRectangle.Stroke;
-            }
-            set
-            {
-                TheRectangle.Stroke = value;
-            }
-        }
-        public SolidColorBrush Fill
-        {
-            get
-            {
-                return (SolidColorBrush)TheRectangle.Fill;
-            }
-            set
-            {
-                TheRectangle.Fill = value;
-            }
-        }
+        public SolidColorBrush PrimaryStroke { get; set; } = Brushes.Cyan;
+        public SolidColorBrush SelectedStroke { get; set; } = Brushes.White;
+
 
         public double StrokeThickness
         {
@@ -60,7 +41,7 @@ namespace ImagingLibrary.Controls.Canvasing
         {
             get
             {
-                return _rect; ;
+                return _rect;
             }
             set
             {
@@ -74,19 +55,20 @@ namespace ImagingLibrary.Controls.Canvasing
 
             }
         } private Rect _rect;
+
         
 
 
 
-        public static CanvasItem Create(Rect rect, double strokeThickness, SolidColorBrush stroke, string optionalTitle = null)
+        public static CanvasItem Create(Rect rect, double strokeThickness, string optionalTitle = null)
         {
             CanvasItem ci = new CanvasItem()
             {
-                Stroke = stroke,
                 StrokeThickness = strokeThickness,
-                Fill = new SolidColorBrush(Colors.Transparent),
                 Rect = rect
             };
+            ci.Rect = rect;
+
             return ci;
         }
 
@@ -97,10 +79,11 @@ namespace ImagingLibrary.Controls.Canvasing
 
 
             // Create the union of the dimensions
-            Rect union = Rect.Union(new Rect(r1.X / ScaleXRatio, r1.Y / ScaleYRatio, r1.Width / ScaleXRatio, r1.Height / ScaleYRatio), new Rect(r2.X / ScaleXRatio, r2.Y / ScaleYRatio, r2.Width / ScaleXRatio, r2.Height / ScaleYRatio));
+            // Rect union = Rect.Union(new Rect(r1.X / ScaleXRatio, r1.Y / ScaleYRatio, r1.Width / ScaleXRatio, r1.Height / ScaleYRatio), new Rect(r2.X / ScaleXRatio, r2.Y / ScaleYRatio, r2.Width / ScaleXRatio, r2.Height / ScaleYRatio));
+            Rect union = Rect.Union(new Rect(r1.X, r1.Y, r1.Width, r1.Height), new Rect(r2.X, r2.Y, r2.Width, r2.Height));
 
             // Return the combined item
-            return Create(union, item1.StrokeThickness, item1.Stroke);
+            return Create(union, item1.StrokeThickness);
             
         }
 
@@ -108,15 +91,17 @@ namespace ImagingLibrary.Controls.Canvasing
         {
             InitializeComponent();
             IsHitTestVisible = true;
+
+            TheRectangle.Stroke = PrimaryStroke;
         }
 
         public void Selected()
         {
-            Stroke = Brushes.White;
+            TheRectangle.Stroke = SelectedStroke;
         }
         public void Unselected()
         {
-            Stroke = Brushes.Cyan;
+            TheRectangle.Stroke = PrimaryStroke;
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
