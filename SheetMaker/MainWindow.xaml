@@ -20,7 +20,7 @@
             <MenuItem Header="File"/>
             <MenuItem Header="Tools">
                 <MenuItem Header="Pan Tool"/>
-                <MenuItem Header="Select Tool"/>
+                <MenuItem Header="Select Tool" Click="SelectTool_Click"/>
             </MenuItem>
             <MenuItem Header="Selection">
                 <MenuItem Header="Select All" Click="SelectAll_Click"/>

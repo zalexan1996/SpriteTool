@@ -52,11 +52,11 @@ namespace SheetMaker
 
             CdPropWidth.Width = new GridLength(200);
 
-            tbNumSprites.Text = "0";
-            tbOffsetX.Text = "0";
-            tbOffsetY.Text = "0";
-            tbSpriteWidth.Text = "32";
-            tbSpriteHeight.Text = "64";
+            tbNumSprites.Text = "1";
+            tbOffsetX.Text = "100";
+            tbOffsetY.Text = "100";
+            tbSpriteWidth.Text = "50";
+            tbSpriteHeight.Text = "50";
             tbGap.Text = "5";
         }
 
@@ -212,6 +212,11 @@ namespace SheetMaker
         private void NewAnimFromSelection_Click(object sender, RoutedEventArgs e)
         {
 
+        }
+
+        private void SelectTool_Click(object sender, RoutedEventArgs e)
+        {
+            ImageCanvas.BeginSelectBoxMode();
         }
     }
 }

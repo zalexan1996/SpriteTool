@@ -47,9 +47,34 @@ namespace ImagingLibrary.Controls.Canvasing
 
 
 
+        // Box Select Mode Members
+        public bool InSelectBoxMode { get; set; } = false;
+        Point _rectSelectStart = new Point(-1, -1);
+        Point _rectSelectEnd = new Point(-1, -1);
+        Rectangle _selectRectangle;
+        public void BeginSelectBoxMode()
+        {
+            InSelectBoxMode = true;
+            zoomBorder.AcceptMouseInput = false;
+        }
+        public void EndSelectBoxMode()
+        {
+            InSelectBoxMode = false;
+            _rectSelectStart.X = _rectSelectStart.Y = _rectSelectEnd.X = _rectSelectEnd.Y = -1;
+            _selectRectangle.Width = _selectRectangle.Height = 0;
+            _selectRectangle.Visibility = Visibility.Collapsed;
+            zoomBorder.AcceptMouseInput = true;
+        }
         public ImageCanvas()
         {
             InitializeComponent();
+            _selectRectangle = new Rectangle()
+            {
+                Stroke = Brushes.LightGray,
+                StrokeDashArray = DoubleCollection.Parse("1, 1")
+            };
+            TheCanvas.Children.Add(_selectRectangle);
+            EndSelectBoxMode();
         }
 
         public void AddCanvasItem(Point position, double width, double height)
@@ -225,6 +250,7 @@ namespace ImagingLibrary.Controls.Canvasing
             if (item == null)
                 return;
         }
+
         private void OnCanvasItemLeftClicked(object sender, EventArgs e)
         {
             
@@ -247,6 +273,74 @@ namespace ImagingLibrary.Controls.Canvasing
                     AddItemToSelection(item);
                     break;
             }
+        }
+
+        private void TheCanvas_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            // If we are in select mode and we have a valid starting point
+            if (InSelectBoxMode && _rectSelectStart != new Point(0, 0))
+            {
+                Point MousePos = Mouse.GetPosition(TheCanvas);
+                _rectSelectEnd = new Point(MousePos.X, MousePos.Y);
+
+                _selectRectangle.Visibility = Visibility.Collapsed;
+                InSelectBoxMode = false;
+                zoomBorder.AcceptMouseInput = true;
+
+                EndSelectBoxMode();
+            }
+        }
+
+        private void TheCanvas_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            // If we are in select mode and we are starting the rectangle drag 
+            if (InSelectBoxMode)
+            {
+                Point MousePos = Mouse.GetPosition(TheCanvas);
+                _rectSelectStart = new Point(MousePos.X, MousePos.Y);
+                _selectRectangle.Visibility = Visibility.Visible;
+                _selectRectangle.StrokeThickness = ScaleXRatio;
+                zoomBorder.AcceptMouseInput = false;
+            }
+        }
+
+        private void TheCanvas_PreviewMouseMove(object sender, MouseEventArgs e)
+        {
+            if (InSelectBoxMode && _rectSelectStart.X != -1 && _rectSelectStart.Y != -1)
+            {
+                Point MouseLocation = e.GetPosition(TheCanvas);
+                Rect r = new Rect(
+                    Math.Min(_rectSelectStart.X, MouseLocation.X),
+                    Math.Min(_rectSelectStart.Y, MouseLocation.Y),
+                    Math.Abs(_rectSelectStart.X - MouseLocation.X),
+                    Math.Abs(_rectSelectStart.Y - MouseLocation.Y)
+                );
+
+                Canvas.SetLeft(_selectRectangle, r.Left);
+                Canvas.SetTop(_selectRectangle, r.Top);
+                _selectRectangle.Width = r.Width;
+                _selectRectangle.Height = r.Height;
+
+
+                ClearSelectedItems();
+                GetItemsUnderRectangle(_selectRectangle).ForEach(i => AddItemToSelection(i));
+
+            }
+        }
+
+        private List<CanvasItem> GetItemsUnderRectangle(Rectangle r)
+        {
+            Rect selectRect = r.RenderedGeometry.Bounds;
+            selectRect.X = Canvas.GetLeft(r);
+            selectRect.Y = Canvas.GetTop(r);
+
+            return CanvasItems.Where((CanvasItem i) => {
+
+                Rect otherRect = i.TheRectangle.RenderedGeometry.Bounds;
+                otherRect.X = Canvas.GetLeft(i);
+                otherRect.Y = Canvas.GetTop(i);
+                return otherRect.IntersectsWith(selectRect);
+            }).ToList();
         }
     }
 }

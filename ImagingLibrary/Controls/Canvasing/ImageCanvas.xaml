@@ -8,8 +8,8 @@
     <DockPanel>
         <Border DockPanel.Dock="Top" HorizontalAlignment="Center">
         </Border>
-        <local:ZoomBorder>
-            <Canvas Name="TheCanvas" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <local:ZoomBorder x:Name="zoomBorder">
+            <Canvas Name="TheCanvas" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" PreviewMouseMove="TheCanvas_PreviewMouseMove" PreviewMouseLeftButtonUp="TheCanvas_PreviewMouseLeftButtonUp" PreviewMouseLeftButtonDown="TheCanvas_PreviewMouseLeftButtonDown">
                 <Image Canvas.Top="0" Canvas.Left="0" Name="TheImage" UseLayoutRounding="True" SnapsToDevicePixels="True" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
             </Canvas>
         </local:ZoomBorder>
