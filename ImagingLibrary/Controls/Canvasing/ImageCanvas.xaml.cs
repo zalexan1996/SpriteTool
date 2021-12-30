@@ -20,6 +20,9 @@ namespace ImagingLibrary.Controls.Canvasing
     /// </summary>
     public partial class ImageCanvas : UserControl
     {
+        public delegate void CanvasItemChangedHandler(CanvasItem newItem);
+        public event CanvasItemChangedHandler OnCanvasItemAdded;
+        public event CanvasItemChangedHandler OnCanvasItemRemove;
 
         public enum IInputMode
         {
@@ -47,7 +50,10 @@ namespace ImagingLibrary.Controls.Canvasing
 
 
 
+
+
         // Box Select Mode Members
+        public bool IsAllSelected { get { return SelectedItems.Count == CanvasItems.Count; } }
         public bool InSelectBoxMode { get; set; } = false;
         Point _rectSelectStart = new Point(-1, -1);
         Point _rectSelectEnd = new Point(-1, -1);
@@ -91,6 +97,7 @@ namespace ImagingLibrary.Controls.Canvasing
 
             TheCanvas.Children.Add(item);
             CanvasItems.Add(item);
+            OnCanvasItemAdded?.Invoke(item);
         }
 
         public void AddCanvasItem(CanvasItem item)
@@ -100,12 +107,15 @@ namespace ImagingLibrary.Controls.Canvasing
 
             TheCanvas.Children.Add(item);
             CanvasItems.Add(item);
+            OnCanvasItemAdded?.Invoke(item);
         }
         public void RemoveCanvasItem(CanvasItem item)
         {
             TheCanvas.Children.Remove(item);
             CanvasItems.Remove(item);
             RemoveItemFromSelection(item);
+
+            OnCanvasItemRemove?.Invoke(item);
         }
 
 
@@ -157,14 +167,22 @@ namespace ImagingLibrary.Controls.Canvasing
 
         public void CreateAnimFromSelection()
         {
+            Models.AnimationGroup animationGroup = new Models.AnimationGroup()
+            {
+                Title = "Animation Group",
+                Frames = SelectedItems,
+                MappedBitmaps = CanvasItemsToBitmaps(SelectedItems)
+            };
 
-            AnimGroupCanvasItem newItem = AnimGroupCanvasItem.AnimGroupFromFrames(SelectedItems, ScaleXRatio, ScaleYRatio);
+
+            AnimGroupCanvasItem newItem = AnimGroupCanvasItem.AnimGroupFromFrames(animationGroup, ScaleXRatio);
             AddCanvasItem(newItem);
             
-            OnAnimGroupCreated?.Invoke((CanvasItems.Where(i=>i.GetType() == typeof(AnimGroupCanvasItem)).Cast<AnimGroupCanvasItem>().ToList()));
+           
+            OnAnimGroupCreated?.Invoke(animationGroup, newItem);
         }
 
-        public delegate void AnimGroupCreatedHandler(List<AnimGroupCanvasItem> Items);
+        public delegate void AnimGroupCreatedHandler(Models.AnimationGroup newItemModel, AnimGroupCanvasItem newItem);
         public event AnimGroupCreatedHandler OnAnimGroupCreated;
 
 
@@ -355,5 +373,37 @@ namespace ImagingLibrary.Controls.Canvasing
                 return otherRect.IntersectsWith(selectRect);
             }).ToList();
         }
+
+
+
+
+        public Types.MappedBitmapImage CanvasItemToMappedBitmap(CanvasItem item)
+        {
+
+            // Initialize the output array.
+            Types.MappedBitmapImage output = new Types.MappedBitmapImage();
+
+            // Convert each rectangle to a MappedBitmapImage
+            output = new Types.MappedBitmapImage()
+            {
+                Source = _image,
+                X = (int)(Canvas.GetLeft(item) / ScaleXRatio),
+                Y = (int)(Canvas.GetTop(item) / ScaleYRatio),
+                Width = (int)(item.Width / ScaleXRatio),
+                Height = (int)(item.Height / ScaleYRatio)
+            };
+            
+            return output;
+        }
+        public List<Types.MappedBitmapImage> CanvasItemsToBitmaps(List<CanvasItem> items)
+        {
+            List<Types.MappedBitmapImage> bitmaps = new List<Types.MappedBitmapImage>();
+            foreach (var i in items)
+            {
+                bitmaps.Add(CanvasItemToMappedBitmap(i));
+            }
+            return bitmaps;
+        }
+
     }
 }

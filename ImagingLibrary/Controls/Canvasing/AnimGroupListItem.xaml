@@ -1,0 +1,23 @@
+﻿<UserControl x:Class="ImagingLibrary.Controls.Canvasing.AnimGroupListItem"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:ImagingLibrary.Controls.Canvasing"
+             mc:Ignorable="d" HorizontalAlignment="Stretch">
+    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="75"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="30"/>
+        </Grid.ColumnDefinitions>
+
+        <Button Click="BtnEdit_Click" Content="Edit" Name="BtnEdit" Grid.Column="0"/>
+        <DockPanel Grid.Column="1">
+            <TextBlock Name="tbTitle" DockPanel.Dock="Top" Foreground="White" Margin="50,0"/>
+            <StackPanel Name="spFrames" Orientation="Horizontal"/>
+        </DockPanel>
+        <Button Click="BtnDelete_Click" Content="X" Name="BtnDelete" Grid.Column="2"/>
+
+    </Grid>
+</UserControl>

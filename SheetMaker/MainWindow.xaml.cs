@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,6 +15,9 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using ImagingLibrary.Types;
 
+
+using ImagingLibrary.Controls.Canvasing;
+
 namespace SheetMaker
 {
     /// <summary>
@@ -22,7 +26,8 @@ namespace SheetMaker
     public partial class MainWindow : Window
     {
         public List<MappedBitmapImage> Frames = new List<MappedBitmapImage>();
-        public List<ImagingLibrary.Controls.Canvasing.AnimGroupCanvasItem> AnimationGroups;
+        // public List<ImagingLibrary.Controls.Canvasing.AnimGroupCanvasItem> AnimationGroups;
+        public ObservableCollection<AnimGroupListItem> AnimGroupListItems = new ObservableCollection<ImagingLibrary.Controls.Canvasing.AnimGroupListItem>();
         public string WorkspaceDirectory { get; set; } = "C:\\temp";
         public string BaseName { get; set; }
 
@@ -30,6 +35,8 @@ namespace SheetMaker
         public MainWindow(BitmapImage bitmapImage, string workspaceDirectory, string baseName)
         {
             InitializeComponent();
+            DataContext = this;
+            spAnimationGroups.DataContext = this;
             ImageCanvas.Image = bitmapImage;
             WorkspaceDirectory = workspaceDirectory;
             BaseName = baseName;
@@ -47,8 +54,12 @@ namespace SheetMaker
         public MainWindow()
         {
             InitializeComponent();
+            DataContext = this;
+            spAnimationGroups.DataContext = this;
             ImageCanvas.Image = new BitmapImage(new Uri("pack://application:,,,/SheetMaker;component/Sheets/Link3.png"));
             ImageCanvas.OnAnimGroupCreated += OnAnimGroupCreated;
+            ImageCanvas.OnCanvasItemAdded += ImageCanvas_OnCanvasItemAdded;
+            ImageCanvas.OnCanvasItemRemove += ImageCanvas_OnCanvasItemRemove;
 
             CdPropWidth.Width = new GridLength(200);
 
@@ -58,6 +69,37 @@ namespace SheetMaker
             tbSpriteWidth.Text = "50";
             tbSpriteHeight.Text = "50";
             tbGap.Text = "5";
+        }
+
+
+        private void ImageCanvas_OnCanvasItemAdded(CanvasItem newItem)
+        {
+            AnimGroupCanvasItem animItem = newItem as AnimGroupCanvasItem;
+            if (animItem != null)
+            {
+                
+                AnimGroupListItem newList = new AnimGroupListItem(animItem.AnimationGroupModel);
+                
+                AnimGroupListItems.Add(newList);
+
+                spAnimationGroups.Items.Add(newList);
+                Console.WriteLine("Added");
+            }
+        }
+
+        private void ImageCanvas_OnCanvasItemRemove(CanvasItem newItem)
+        {
+            AnimGroupCanvasItem animItem = newItem as AnimGroupCanvasItem;
+            if (animItem != null)
+            {
+                AnimGroupListItem listItem = AnimGroupListItems.First(i => i.AnimationGroup == animItem.AnimationGroupModel);
+                if (listItem != null)
+                {
+                    AnimGroupListItems.Remove(listItem);
+                    spAnimationGroups.Items.Remove(listItem);
+                    Console.WriteLine("Removed");
+                }
+            }
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -209,16 +251,61 @@ namespace SheetMaker
         private void NewAnimFromSelection_Click(object sender, RoutedEventArgs e)
         {
             ImageCanvas.CreateAnimFromSelection();
+            
         }
 
         private void SelectTool_Click(object sender, RoutedEventArgs e)
         {
             ImageCanvas.BeginSelectBoxMode();
         }
-        private void OnAnimGroupCreated(List<ImagingLibrary.Controls.Canvasing.AnimGroupCanvasItem> Items)
+        private void OnAnimGroupCreated(ImagingLibrary.Controls.Canvasing.Models.AnimationGroup Item, AnimGroupCanvasItem newItem)
         {
-            spAnimationGroups.DataContext = Items;
 
+        }
+
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            // Enter Rectangle Select Mode
+            switch (e.Key)
+            {
+                case Key.R:         // Rectangle Select Tool
+                    ImageCanvas.BeginSelectBoxMode();
+                    break;
+
+                case Key.P:         // Pan Tool
+                    ImageCanvas.EndSelectBoxMode();
+                    break;
+
+                case Key.Delete:    // Delete selection
+                    ImageCanvas.RemoveSelectedItemsFromCanvas();
+                    break;
+
+                case Key.C:         // Combine Selection
+                    ImageCanvas.CombineSelectedItems();
+                    break;
+
+                case Key.A:         // Select All / None
+                    if ((Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
+                    {
+                        // Select None
+                        if ((Keyboard.Modifiers & ModifierKeys.Shift) == ModifierKeys.Shift) { ImageCanvas.ClearSelectedItems();  }
+
+                        // Select None if all items are selected
+                        if (ImageCanvas.IsAllSelected) { ImageCanvas.ClearSelectedItems(); }
+
+                        // Select All otherwise.
+                        else { ImageCanvas.SelectAll(); }
+                    }
+                    break;
+
+                case Key.N:         // New Animation Group from selection
+                    ImageCanvas.CreateAnimFromSelection();
+                    break;
+
+                default:            // Default stuff not used
+                    break;
+            }
+            e.Handled = true;
         }
     }
 }

@@ -12,9 +12,10 @@ namespace ImagingLibrary.Controls.Canvasing
     public class AnimGroupCanvasItem : CanvasItem
     {
 
-        public override SolidColorBrush PrimaryStroke { get; set; } = Brushes.DarkCyan;
-        public override SolidColorBrush SelectedStroke { get; set; } = Brushes.White;
+        // public override SolidColorBrush PrimaryStroke { get; set; } = Brushes.DarkCyan;
+        // public override SolidColorBrush SelectedStroke { get; set; } = Brushes.White;
 
+        public Models.AnimationGroup AnimationGroupModel { get; set; }
         public string Text
         {
             get
@@ -29,31 +30,16 @@ namespace ImagingLibrary.Controls.Canvasing
 
         protected List<CanvasItem> Items;
 
-        public AnimGroupCanvasItem(List<CanvasItem> items)
-            : base()
+        protected static Random random = new Random();
+        public AnimGroupCanvasItem(Models.AnimationGroup model) : base()
         {
-            Items = items;
+            AnimationGroupModel = model;
+            TheTextBlock.Text = model.Title;
             TheTextBlock.Visibility = System.Windows.Visibility.Visible;
             
-            Rect bounds = items[0].Rect;
-            Random random = new Random();
-            PrimaryStroke = new SolidColorBrush(Color.FromRgb((byte)random.Next(100, Byte.MaxValue), (byte)random.Next(100, Byte.MaxValue), (byte)random.Next(100, Byte.MaxValue)));
+            Rect bounds = model.Frames[0].Rect;
 
-            foreach (CanvasItem item in items)
-            {
-                /*
-                bounds.X = Math.Min(bounds.X, item.Rect.X);
-                bounds.Y = Math.Min(bounds.Y, item.Rect.Y);
-                
-                bounds.Width = Math.Max(bounds.Width, (item.Rect.X + item.Rect.Width) - bounds.X);
-                bounds.Height = Math.Max(bounds.Height,(item.Rect.Y + item.Rect.Height) - bounds.Y);
-                
-                Console.WriteLine($"\nOther: {item.Rect}");
-                */
-
-
-                bounds.Union(item.Rect);
-            }
+            model.Frames.ForEach(i => bounds.Union(i.Rect));
             Rect = bounds;
         }
 
@@ -65,12 +51,12 @@ namespace ImagingLibrary.Controls.Canvasing
         /// <param name="items"></param>
         /// <param name="title"></param>
         /// <returns></returns>
-        public static AnimGroupCanvasItem AnimGroupFromFrames(List<CanvasItem> items, double scaleX, double scaleY, string title = "Animation Group")
+        public static AnimGroupCanvasItem AnimGroupFromFrames(Models.AnimationGroup model, double scaleX)
         {
-            AnimGroupCanvasItem newItem = new AnimGroupCanvasItem(items)
+            AnimGroupCanvasItem newItem = new AnimGroupCanvasItem(model)
             {
-                Text = title,
-                StrokeThickness = scaleX
+                StrokeThickness = scaleX,
+                PrimaryStroke = new SolidColorBrush(Color.FromRgb((byte)random.Next(100, Byte.MaxValue), (byte)random.Next(100, Byte.MaxValue), (byte)random.Next(100, Byte.MaxValue)))
             };
 
             return newItem;

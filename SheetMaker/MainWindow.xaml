@@ -7,7 +7,7 @@
         xmlns:controls="clr-namespace:ImagingLibrary.Controls;assembly=ImagingLibrary"
         xmlns:canvasing="clr-namespace:ImagingLibrary.Controls.Canvasing;assembly=ImagingLibrary"
         mc:Ignorable="d"
-        Title="MainWindow" Height="600" Width="800" Background="{DynamicResource Background2}">
+        Title="MainWindow" Height="600" Width="800" Background="{DynamicResource Background2}" KeyDown="Window_KeyDown">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -19,23 +19,23 @@
         <Menu DockPanel.Dock="Top" Background="{StaticResource Background4}" Foreground="{StaticResource Foreground2}">
             <MenuItem Header="File"/>
             <MenuItem Header="Tools">
-                <MenuItem Header="Pan Tool"/>
-                <MenuItem Header="Select Tool" Click="SelectTool_Click"/>
+                <MenuItem Header="Pan Tool (P)" Foreground="Black"/>
+                <MenuItem Header="Rectangle Select Tool (R)" Click="SelectTool_Click" Foreground="Black"/>
             </MenuItem>
             <MenuItem Header="Selection">
-                <MenuItem Header="Select All" Click="SelectAll_Click"/>
-                <MenuItem Header="Select All Animations" Click="SelectAllAnimations_Click"/>
-                <MenuItem Header="Select All Frames" Click="SelectAllFrames_Click"/>
-                <MenuItem Header="Select None" Click="SelectNone_Click"/>
+                <MenuItem Header="Select All (Ctrl-A)" Click="SelectAll_Click" Foreground="Black"/>
+                <MenuItem Header="Select All Animations" Click="SelectAllAnimations_Click" Foreground="Black"/>
+                <MenuItem Header="Select All Frames" Click="SelectAllFrames_Click" Foreground="Black"/>
+                <MenuItem Header="Select None (Ctrl-Shift-A)" Click="SelectNone_Click" Foreground="Black"/>
                 <Separator/>
-                <MenuItem Header="Remove Selected Items" Click="RemoveSelectedItems_Click"/>
-                <MenuItem Header="Combine Selected Items" Click="CombineSelectedItems_Click"/>
-                <MenuItem Header="New Animation from Selection" Click="NewAnimFromSelection_Click"/>
+                <MenuItem Header="Remove Selected Items (Del)" Click="RemoveSelectedItems_Click" Foreground="Black"/>
+                <MenuItem Header="Combine Selected Items (C)" Click="CombineSelectedItems_Click" Foreground="Black"/>
+                <MenuItem Header="New Animation from Selection (N)" Click="NewAnimFromSelection_Click" Foreground="Black"/>
             </MenuItem>
 
         </Menu>
 
-        <Grid>
+        <Grid x:Name="gMainGrid">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="5"/>
@@ -152,7 +152,7 @@
 
                 <Border Grid.Row="1" Background="{StaticResource Background2}">
                     <ScrollViewer Grid.Row="10" Grid.Column="0" Grid.ColumnSpan="3">
-                        <StackPanel Name="spAnimationGroups"/>
+                        <ListBox Name="spAnimationGroups" ItemsSource="{Binding AnimGroupListItems}" Background="{StaticResource Background4}"/>
                     </ScrollViewer>
                 </Border>
                 <Border Grid.Row="2" Background="{StaticResource Background6}">

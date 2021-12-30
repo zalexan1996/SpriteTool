@@ -51,10 +51,14 @@
     <Compile Include="Algorithms\Algorithm.cs" />
     <Compile Include="Algorithms\IslandDetection\IslandDetectionAlgorithm.cs" />
     <Compile Include="Controls\Canvasing\AnimGroupCanvasItem.cs" />
+    <Compile Include="Controls\Canvasing\AnimGroupListItem.xaml.cs">
+      <DependentUpon>AnimGroupListItem.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\Canvasing\CanvasItem.xaml.cs">
       <DependentUpon>CanvasItem.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\Canvasing\ImageCanvas.xaml.cs" />
+    <Compile Include="Controls\Canvasing\Models\AnimationGroup.cs" />
     <Compile Include="Controls\ImagePresenter.xaml.cs">
       <DependentUpon>ImagePresenter.xaml</DependentUpon>
     </Compile>
@@ -65,6 +69,10 @@
     <Compile Include="Types\MappedBitmapImage.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Controls\Canvasing\AnimGroupListItem.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\Canvasing\CanvasItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
