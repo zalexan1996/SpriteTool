@@ -13,7 +13,8 @@
             </ControlTemplate>
         </Button.Template>
         <Grid>
-            <TextBlock x:Name="TheTextBlock" Text="OptionalTitle" Visibility="Collapsed" FontSize="3"/>
+            
+            <TextBlock Background="Black" Foreground="White" x:Name="TheTextBlock" Text="OptionalTitle" Visibility="Collapsed" FontSize="3" VerticalAlignment="Top" HorizontalAlignment="Center"/>
             <Rectangle x:Name="TheRectangle" Fill="Transparent"/>
         </Grid>
     </Button>

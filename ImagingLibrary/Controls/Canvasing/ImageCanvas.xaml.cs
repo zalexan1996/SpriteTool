@@ -75,6 +75,7 @@ namespace ImagingLibrary.Controls.Canvasing
             };
             TheCanvas.Children.Add(_selectRectangle);
             EndSelectBoxMode();
+            
         }
 
         public void AddCanvasItem(Point position, double width, double height)
@@ -153,6 +154,18 @@ namespace ImagingLibrary.Controls.Canvasing
             }
         }
 
+
+        public void CreateAnimFromSelection()
+        {
+
+            AnimGroupCanvasItem newItem = AnimGroupCanvasItem.AnimGroupFromFrames(SelectedItems, ScaleXRatio, ScaleYRatio);
+            AddCanvasItem(newItem);
+            
+            OnAnimGroupCreated?.Invoke((CanvasItems.Where(i=>i.GetType() == typeof(AnimGroupCanvasItem)).Cast<AnimGroupCanvasItem>().ToList()));
+        }
+
+        public delegate void AnimGroupCreatedHandler(List<AnimGroupCanvasItem> Items);
+        public event AnimGroupCreatedHandler OnAnimGroupCreated;
 
 
         public double ScaleXRatio { get { return TheImage.ActualWidth / (TheImage.Source as BitmapImage).PixelWidth; } }

@@ -22,8 +22,8 @@ namespace ImagingLibrary.Controls.Canvasing
     {
 
 
-        public SolidColorBrush PrimaryStroke { get; set; } = Brushes.Cyan;
-        public SolidColorBrush SelectedStroke { get; set; } = Brushes.White;
+        public virtual SolidColorBrush PrimaryStroke { get; set; } = Brushes.DarkRed;
+        public virtual SolidColorBrush SelectedStroke { get; set; } = Brushes.White;
 
 
         public double StrokeThickness

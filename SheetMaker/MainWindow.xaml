@@ -152,17 +152,7 @@
 
                 <Border Grid.Row="1" Background="{StaticResource Background2}">
                     <ScrollViewer Grid.Row="10" Grid.Column="0" Grid.ColumnSpan="3">
-                        <WrapPanel Name="ImagePreviewer" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                            <WrapPanel.Resources>
-                                <Style TargetType="Image">
-                                    <Setter Property="Margin" Value="2"/>
-                                    <Setter Property="HorizontalAlignment" Value="Center"/>
-                                    <Setter Property="VerticalAlignment" Value="Center"/>
-                                    <Setter Property="Stretch" Value="None"/>
-                                    <Setter Property="Width" Value="64"/>
-                                </Style>
-                            </WrapPanel.Resources>
-                        </WrapPanel>
+                        <StackPanel Name="spAnimationGroups"/>
                     </ScrollViewer>
                 </Border>
                 <Border Grid.Row="2" Background="{StaticResource Background6}">

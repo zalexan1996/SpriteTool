@@ -22,7 +22,7 @@ namespace SheetMaker
     public partial class MainWindow : Window
     {
         public List<MappedBitmapImage> Frames = new List<MappedBitmapImage>();
-
+        public List<ImagingLibrary.Controls.Canvasing.AnimGroupCanvasItem> AnimationGroups;
         public string WorkspaceDirectory { get; set; } = "C:\\temp";
         public string BaseName { get; set; }
 
@@ -48,7 +48,7 @@ namespace SheetMaker
         {
             InitializeComponent();
             ImageCanvas.Image = new BitmapImage(new Uri("pack://application:,,,/SheetMaker;component/Sheets/Link3.png"));
-
+            ImageCanvas.OnAnimGroupCreated += OnAnimGroupCreated;
 
             CdPropWidth.Width = new GridLength(200);
 
@@ -62,7 +62,6 @@ namespace SheetMaker
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            ImagePreviewer.Children.Clear();
             Frames.AddRange(ImageCanvas.RectanglesToImages());
 
             if (Frames != null)
@@ -71,7 +70,6 @@ namespace SheetMaker
                 {
                     Image i = new Image();
                     i.Source = r.MappedImage;
-                    ImagePreviewer.Children.Add(i);
 
                     r.X = (int)(r.X);
                     r.Y = (int)(r.Y);
@@ -166,7 +164,6 @@ namespace SheetMaker
         private void BtnClear_Click(object sender, RoutedEventArgs e)
         {
             // Clear the WrapPanel
-            ImagePreviewer.Children.Clear();
             Frames.Clear();
         }
 
@@ -211,12 +208,17 @@ namespace SheetMaker
 
         private void NewAnimFromSelection_Click(object sender, RoutedEventArgs e)
         {
-
+            ImageCanvas.CreateAnimFromSelection();
         }
 
         private void SelectTool_Click(object sender, RoutedEventArgs e)
         {
             ImageCanvas.BeginSelectBoxMode();
+        }
+        private void OnAnimGroupCreated(List<ImagingLibrary.Controls.Canvasing.AnimGroupCanvasItem> Items)
+        {
+            spAnimationGroups.DataContext = Items;
+
         }
     }
 }
