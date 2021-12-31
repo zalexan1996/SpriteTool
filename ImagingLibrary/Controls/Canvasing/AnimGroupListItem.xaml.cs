@@ -58,7 +58,7 @@ namespace ImagingLibrary.Controls.Canvasing
 
         private void BtnDelete_Click(object sender, RoutedEventArgs e)
         {
-
+            
         }
     }
 }

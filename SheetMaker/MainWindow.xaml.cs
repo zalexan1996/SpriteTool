@@ -81,6 +81,7 @@ namespace SheetMaker
                 AnimGroupListItem newList = new AnimGroupListItem(animItem.AnimationGroupModel);
                 
                 AnimGroupListItems.Add(newList);
+                newList.HorizontalAlignment = HorizontalAlignment.Stretch;
 
                 spAnimationGroups.Items.Add(newList);
                 Console.WriteLine("Added");
