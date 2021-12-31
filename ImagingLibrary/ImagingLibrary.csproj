@@ -63,6 +63,9 @@
       <DependentUpon>ImagePresenter.xaml</DependentUpon>
     </Compile>
     <Compile Include="Controls\ZoomBorder.cs" />
+    <Compile Include="EditAnimGroupWindow.xaml.cs">
+      <DependentUpon>EditAnimGroupWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ImageFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Types\EImageOperationResult.cs" />
@@ -82,6 +85,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Controls\ImagePresenter.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="EditAnimGroupWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

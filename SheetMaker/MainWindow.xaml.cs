@@ -59,7 +59,6 @@ namespace SheetMaker
             ImageCanvas.Image = new BitmapImage(new Uri("pack://application:,,,/SheetMaker;component/Sheets/Link3.png"));
             ImageCanvas.OnAnimGroupCreated += OnAnimGroupCreated;
             ImageCanvas.OnCanvasItemAdded += ImageCanvas_OnCanvasItemAdded;
-            ImageCanvas.OnCanvasItemRemove += ImageCanvas_OnCanvasItemRemove;
 
             CdPropWidth.Width = new GridLength(200);
 
@@ -79,7 +78,7 @@ namespace SheetMaker
             {
                 
                 AnimGroupListItem newList = new AnimGroupListItem(animItem.AnimationGroupModel);
-                
+                newList.OnRemoveFromParent += NewList_OnRemoveFromParent;
                 AnimGroupListItems.Add(newList);
                 newList.HorizontalAlignment = HorizontalAlignment.Stretch;
 
@@ -88,19 +87,10 @@ namespace SheetMaker
             }
         }
 
-        private void ImageCanvas_OnCanvasItemRemove(CanvasItem newItem)
+        // Removes a AnimGroupListItem from the UI
+        private void NewList_OnRemoveFromParent(object sender, EventArgs e)
         {
-            AnimGroupCanvasItem animItem = newItem as AnimGroupCanvasItem;
-            if (animItem != null)
-            {
-                AnimGroupListItem listItem = AnimGroupListItems.First(i => i.AnimationGroup == animItem.AnimationGroupModel);
-                if (listItem != null)
-                {
-                    AnimGroupListItems.Remove(listItem);
-                    spAnimationGroups.Items.Remove(listItem);
-                    Console.WriteLine("Removed");
-                }
-            }
+            spAnimationGroups.Items.Remove(sender);
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

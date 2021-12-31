@@ -24,6 +24,32 @@ namespace ImagingLibrary.Controls.Canvasing.Models
             }
         } private string _title = "Animation Group";
 
+        public string Category
+        {
+            get
+            {
+                return _category;
+            }
+            set
+            {
+                _category = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Category)));
+            }
+        } private string _category = "";
+
+        public IDictionary<string, string> Metadata
+        {
+            get
+            {
+                return _metadata;
+            }
+            set
+            {
+                _metadata = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(Metadata)));
+            }
+        } private IDictionary<string, string> _metadata;
+
 
         public List<CanvasItem> Frames
         {

@@ -53,12 +53,14 @@ namespace ImagingLibrary.Controls.Canvasing
 
         private void BtnEdit_Click(object sender, RoutedEventArgs e)
         {
-
+            AnimationGroup = EditAnimGroupWindow.EditListItem(this);
         }
 
         private void BtnDelete_Click(object sender, RoutedEventArgs e)
         {
-            
+            OnRemoveFromParent?.Invoke(this, e);
         }
+
+        public event EventHandler OnRemoveFromParent;
     }
 }

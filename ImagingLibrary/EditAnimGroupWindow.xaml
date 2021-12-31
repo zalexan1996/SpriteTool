@@ -1,0 +1,49 @@
+﻿<Window x:Class="ImagingLibrary.EditAnimGroupWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ImagingLibrary"
+        mc:Ignorable="d"
+        Title="Edit Animation" Height="350" Width="600">
+
+    <Window.Resources>
+        <Style TargetType="TextBox">
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+    </Window.Resources>
+
+    <StackPanel VerticalAlignment="Center">
+        <TextBlock Text="Animation Name"/>
+        <TextBox Name="TB_AnimationName" Text="{Binding Title, Mode=TwoWay}"/>
+        
+        <TextBlock Text="Animation Category"/>
+        <TextBox Name="TB_AnimationCategory" Text="{Binding Category, Mode=TwoWay}"/>
+        
+        <TextBlock Text="Metadata"/>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="30"/>
+            </Grid.RowDefinitions>
+            <TextBox Name="TB_MetadataKey1"     Grid.Row="0" Grid.Column="0"/>
+            <TextBox Name="TB_MetadataValue1"   Grid.Row="0" Grid.Column="1"/>
+            <TextBox Name="TB_MetadataKey2"     Grid.Row="1" Grid.Column="0"/>
+            <TextBox Name="TB_MetadataValue2"   Grid.Row="1" Grid.Column="1"/>
+            <TextBox Name="TB_MetadataKey3"     Grid.Row="2" Grid.Column="0"/>
+            <TextBox Name="TB_MetadataValue3"   Grid.Row="2" Grid.Column="1"/>
+            <TextBox Name="TB_MetadataKey4"     Grid.Row="3" Grid.Column="0"/>
+            <TextBox Name="TB_MetadataValue4"   Grid.Row="3" Grid.Column="1"/>
+            <TextBox Name="TB_MetadataKey5"     Grid.Row="4" Grid.Column="0"/>
+            <TextBox Name="TB_MetadataValue5"   Grid.Row="4" Grid.Column="1"/>
+        </Grid>
+        <Button Name="BtnSave" Click="BtnSave_Click" Content="Save" HorizontalAlignment="Center" Padding="12,6" Margin="5,10,5,5"/>
+    </StackPanel>
+</Window>
